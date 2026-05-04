@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import CustomCard from '../components/common/Card';
+import CustomCard from '../../components/common/Card';
 
 export default function HomeScreen() {
   return (
