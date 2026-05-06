@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import CustomButton from '../../components/common/Button';
 import CustomCard from '../../components/common/Card';
