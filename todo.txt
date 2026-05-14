@@ -317,3 +317,436 @@ rozpisać Ci dokładne wzory (kod-ready)
 albo pomóc zaprojektować API / strukturę danych pod to
 
 To już naprawdę może być coś dużo lepszego niż większość aplikacji fitness 👍
+
+
+
+---------------------------------------------------------------------------------------------------------kalorie
+
+Model, który warto zastosować
+1. BMR — baza organizmu
+
+To kalorie potrzebne do życia.
+
+Możesz użyć wzoru Mifflin-St Jeor (najpopularniejszy i sensownie dokładny):
+
+Dla mężczyzn:
+
+BMR=10m+6.25h−5a+5
+
+Dla kobiet:
+
+BMR=10m+6.25h−5a−161
+
+gdzie:
+
+m = masa w kg
+h = wzrost w cm
+a = wiek
+
+To daje kcal/dzień.
+
+2. NEAT — ruch poza treningiem
+
+Czyli:
+
+chodzenie,
+stanie,
+sprzątanie,
+wiercenie się,
+codzienna aktywność.
+
+I tutaj właśnie kroki są świetne.
+
+Nie rób:
+
+BMR × activity multiplier
+
+jeśli masz realne dane z kroków, bo wtedy podwójnie liczysz aktywność.
+
+3. Treningi
+
+Dodawane osobno:
+
+siłownia,
+cardio,
+rower,
+bieganie itd.
+Najlepsza architektura dla aplikacji
+Finalnie:
+
+TDEE=BMR+kroki+trening+TEF
+
+gdzie:
+
+BMR → baza
+kroki → codzienny ruch
+trening → dodatkowy wysiłek
+TEF → energia na trawienie (~10%)
+Jak liczyć kroki?
+
+To jest kluczowe.
+
+Najprostsze i skuteczne:
+
+kcal z kroków
+
+Średnio:
+
+1 krok ≈ 0.03–0.06 kcal
+zależnie od masy ciała i tempa.
+
+Bardziej realistycznie:
+
+Waga	kcal / 1000 kroków
+50 kg	~25–35
+70 kg	~35–50
+90 kg	~45–65
+Bardzo dobra praktyczna metoda
+Liczenie po dystansie
+kroki → dystans
+dystans → kcal
+
+Bo spalanie bardziej zależy od dystansu niż liczby kroków.
+
+Krok 1 — długość kroku
+
+Możesz przyjąć:
+
+d≈0.415h
+
+gdzie:
+
+d = długość kroku w cm
+h = wzrost w cm
+Krok 2 — dystans
+
+distance=steps×strideLength
+
+Krok 3 — spalanie chodzenia
+
+Spacer:
+
+kcal≈weight×distance
+km
+	​
+
+×0.75
+
+Dla biegu bliżej:
+
+1 kcal / kg / km
+Treningi
+
+Tu najlepiej użyć MET.
+
+Wzór MET
+
+kcal=MET×weight×time
+hours
+	​
+
+
+Przykłady MET:
+
+Aktywność	MET
+spacer	2.5–4
+szybki marsz	5–6
+siłownia lekka	3–5
+siłownia ciężka	6–8
+bieganie	8–14
+rower	4–12
+
+To jest standard używany praktycznie wszędzie.
+
+Problem, który MUSISZ rozwiązać
+Double counting
+
+Jeśli:
+
+użytkownik robi trening,
+a kroki dalej lecą,
+
+to:
+
+spacer na bieżni może policzyć się 2 razy.
+
+Dlatego:
+
+trening powinien mieć flagę:
+„zawiera kroki”
+albo „ignoruj kroki podczas treningu”.
+Co robi większość aplikacji
+Apple / Garmin / Fitbit
+
+W praktyce:
+
+bazowe spalanie „leci” cały czas,
+aktywność dodawana dynamicznie,
+tętno poprawia estymację,
+trening ma wyższy priorytet niż kroki.
+Najbardziej sensowny MVP dla ciebie
+
+Na start zrobiłbym:
+
+dzienne kcal
+dailyCalories =
+    BMR
+  + caloriesFromSteps
+  + caloriesFromWorkout
+
+I tyle.
+
+Bez:
+
+magicznych AI,
+multiplierów,
+komplikacji.
+Jak zrobić to naprawdę dobrze
+Accuracy tiers
+Tier 1
+waga
+wzrost
+wiek
+płeć
+kroki
+typ treningu
+Tier 2
+tempo chodzenia
+tętno
+VO2max
+Tier 3
+adaptive calibration:
+użytkownik wpisuje wagę codziennie,
+system uczy się realnego TDEE.
+
+To robią najlepsze appki.
+
+Największy sekret fitness aplikacji
+
+Wszystkie liczą niedokładnie.
+
+Nawet:
+
+Apple Watch,
+Garmin,
+Whoop.
+
+Błąd:
+
+często 10–30%.
+
+Najważniejsze jest:
+
+spójność,
+przewidywalność trendu,
+dobra UX,
+nie idealna fizjologia.
+
+
+Najlepsze podejście do aplikacji
+NIE licz kcal „na powtórzenie” sztywno
+
+Zamiast:
+
+1 pompka = 0.5 kcal
+
+rób:
+
+kcal zależy od czasu wykonywania ćwiczenia + intensywności + masy ciała
+
+To jest dużo bliższe rzeczywistości.
+
+Standard branżowy — MET
+
+Fitness appki zwykle używają:
+
+MET (Metabolic Equivalent of Task)
+albo danych HR/tętna z zegarka.
+
+MET jest prosty i bardzo dobry do MVP.
+
+Wzór
+
+kcal=MET×masa(kg)×czas(h)
+
+lub w minutach:
+
+kcal=
+200
+MET×3.5×masa(kg)
+	​
+
+×minuty
+
+To jest standard używany w wielu kalkulatorach fitness.
+
+Problem z ćwiczeniami siłowymi
+
+Dla:
+
+pompek,
+podciągnięć,
+przysiadów,
+martwego ciągu,
+wyciskania,
+
+MET jest słabe, bo:
+
+5 ciężkich powtórzeń ≠ 20 lekkich,
+dużo czasu to odpoczynek,
+spalanie zależy od intensywności.
+
+Dlatego proponuję model hybrydowy.
+
+Najlepszy model do Twojej appki
+1. Każde ćwiczenie ma bazowy MET
+
+Przykładowo:
+
+Ćwiczenie	MET
+pompki lekko	3.8
+pompki intensywnie	8
+podciąganie	8–9
+brzuszki	4–6
+trening siłowy lekki	3.5
+trening siłowy ciężki	6
+2. Licz czas wykonywania serii
+
+Np:
+
+10 pompek
+tempo 2 s na rep
+seria trwa 20 s
+
+Czyli:
+
+czas = reps * sekundy_na_rep
+3. Dodaj wpływ ciężaru
+
+Np:
+
+effective_weight = body_weight + extra_load * 0.7
+
+Nie cały ciężar działa 1:1 metabolicznie.
+
+4. Dodaj intensity multiplier
+
+Np:
+
+Intensywność	mnożnik
+lekka	0.8
+średnia	1.0
+ciężka	1.2
+do upadku	1.4
+Przykładowy model dla pompek
+Dane
+80 kg
+20 pompek
+2 s / rep
+MET = 8
+
+Czas:
+
+czas=20×2s=40s=0.011h
+
+Kalorie:
+
+kcal=8×80×0.011≈7
+
+Czyli:
+
+~7 kcal za 20 intensywnych pompek
+
+I to jest realistyczy wynik.
+
+Dlaczego internetowe „500 kcal/h” jest bezużyteczne
+
+Bo:
+
+godzina siłowni zawiera odpoczynek,
+różne ćwiczenia spalają różnie,
+ktoś robi FBW,
+ktoś siedzi na telefonie 10 minut między seriami.
+
+Dla aplikacji lepiej liczyć:
+
+aktywny czas serii,
+osobno rest time,
+osobno EPOC („afterburn”).
+Co robią profesjonalne appki
+MyFitnessPal / Fitbit / Garmin
+
+Najczęściej:
+
+MET,
+tętno,
+AI estimation,
+dane z zegarka.
+
+Nikt nie ma magicznego dokładnego:
+
+„1 podciągnięcie = 1.23 kcal”
+
+bo fizjologia tak nie działa.
+
+Co polecam do implementacji
+MVP
+Na ćwiczenie trzymaj:
+{
+  name,
+  metLight,
+  metMedium,
+  metHeavy,
+  primaryMuscles,
+  avgSecondsPerRep
+}
+Kalkulacja
+durationSec = reps * secondsPerRep
+
+kcal =
+  ((MET * 3.5 * effectiveWeight) / 200)
+  * (durationSec / 60)
+  * intensityMultiplier
+Skąd brać dane?
+
+Najlepsze źródła:
+
+Compendium of Physical Activities
+MET tables
+publikacje exercise physiology
+
+Szukaj:
+
+„MET resistance training”
+„MET calisthenics”
+„energy expenditure resistance exercise”
+Co jeszcze możesz zrobić lepiej niż konkurencja
+Rozdziel:
+Active calories
+
+(spalone podczas ruchu)
+
+i
+
+EPOC
+
+(spalanie po treningu)
+
+Bo ciężki trening siłowy ma duży afterburn.
+
+Najważniejsze
+
+Nie próbuj być „medycznie dokładny”.
+
+Użytkownicy oczekują:
+
+spójności,
+sensownych liczb,
+porównywalności treningów.
+
+Jeśli Twoja appka pokaże:
+
+trening A ≈ 220 kcal
+trening B ≈ 340 kcal
+
+i proporcje będą sensowne — to już jest bardzo dobre UX.
