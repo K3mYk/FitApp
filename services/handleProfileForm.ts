@@ -1,6 +1,6 @@
-import { getCurrentUserId, setCurrentUserId } from "./settingsService";
-import { createUser } from "../database/repositories/userRepo";
 import { addMeasurement } from "../database/repositories/measurementRepo";
+import { createUser } from "../database/repositories/userRepo";
+import { getCurrentUserId, setCurrentUserId } from "./settingsService";
 
 export const handleFormSubmit = async (form:any) => {
   let userId = await getCurrentUserId();

@@ -1,5 +1,4 @@
-import { getSetting } from "../database/repositories/settingsRepo";
-import { setSetting } from "../database/repositories/settingsRepo";
+import { getSetting, setSetting } from "../database/repositories/settingsRepo";
 
 
 export const getCurrentUserId = async (): Promise<number | null> => {

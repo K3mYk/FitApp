@@ -1,5 +1,11 @@
+// database/db.ts
 import * as SQLite from 'expo-sqlite';
 
+let dbInstance: any = null; 
+
 export const getDB = async () => {
-  return await SQLite.openDatabaseAsync('fitness.db');
+  if (!dbInstance) {
+    dbInstance = await SQLite.openDatabaseAsync('fitapp.db');
+  }
+  return dbInstance;
 };

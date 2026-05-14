@@ -1,4 +1,3 @@
-import { getDB } from '../db';
 import { Measurement } from '../models/measurement';
 
 export const addMeasurement = async (m: Measurement) => {

@@ -3,7 +3,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from "react";
 import { runMigrations } from "../database/migrations";
 
-// Zapobiega automatycznemu ukrywaniu ekranu powitalnego
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
