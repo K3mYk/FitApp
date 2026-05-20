@@ -5,9 +5,9 @@ export const createUser = async (user: User) => {
   const db = await getDB();
 
   const result = await db.runAsync(
-    `INSERT INTO users (height, weight, age, sex)
-     VALUES (?, ?, ?, ?)`,
-    [user.height, user.weight, user.age, user.sex]
+    `INSERT INTO users (height, age, sex)
+     VALUES (?, ?, ?)`,
+    [user.height, user.age, user.sex]
   );
 
   return result.lastInsertRowId;
@@ -28,8 +28,8 @@ export const updateUser = async (user: User) => {
 
   await db.runAsync(
     `UPDATE users
-     SET height = ?, weight = ?, age = ?, sex = ?
+     SET height = ?, age = ?, sex = ?
      WHERE id = ?`,
-    [user.height, user.weight, user.age, user.sex, user.id]
+    [user.height, user.age, user.sex, user.id]
   );
 };

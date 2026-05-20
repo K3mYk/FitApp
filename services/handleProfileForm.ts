@@ -1,4 +1,4 @@
-import { addMeasurement } from "../database/repositories/measurementRepo";
+import { addMeasurement, getMeasurements } from "../database/repositories/measurementRepo";
 import { createUser } from "../database/repositories/userRepo";
 import { getCurrentUserId, setCurrentUserId } from "./settingsService";
 
@@ -9,7 +9,6 @@ export const handleFormSubmit = async (form:any) => {
   if (!userId) {
     userId = await createUser({
       height: form.height,
-      weight: form.weight,
       age: form.age,
       sex: form.sex,
     });
@@ -25,7 +24,11 @@ export const handleFormSubmit = async (form:any) => {
     neck: form.neck,
     date: new Date().toISOString(),
   });}
-  tests();
+  if (userId){
+    tests();
+    const measurements = await getMeasurements(userId);
+    console.log(measurements);
+  }
 };
 
 function tests(){
